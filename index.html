@@ -4,237 +4,831 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ThinkPad — Built for Business</title>
-  <link rel="stylesheet" href="style.css">
+  <script>
+    /* Prevent flash of wrong theme on load */
+    (function() {
+      var t = localStorage.getItem('thinkpad-theme');
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark-mode');
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      --color-bg: #FFFFFF;
+      --color-text: #000000;
+      --color-muted: #666666;
+      --color-border: #CCCCCC;
+      --color-surface: #F5F5F5;
+      --color-surface-alt: #E0E0E0;
+      --color-dot: #CCCCCC;
+    }
+
+    .dark-mode {
+      --color-bg: #111111;
+      --color-text: #EEEEEE;
+      --color-muted: #AAAAAA;
+      --color-border: #333333;
+      --color-surface: #1A1A1A;
+      --color-surface-alt: #222222;
+      --color-dot: #333333;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 4rem;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      background-image: radial-gradient(circle, var(--color-dot) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    a {
+      color: var(--color-text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    a:visited {
+      color: var(--color-muted);
+    }
+
+    a:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--color-text);
+      outline-offset: 2px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background-color: var(--color-text);
+      color: var(--color-bg);
+      padding: 0.75rem 1.5rem;
+      z-index: 200;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .skip-link:focus {
+      top: 0.5rem;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: var(--color-bg);
+      border-bottom: 1px solid transparent;
+      transition: border-color 150ms ease;
+    }
+
+    .site-header.scrolled {
+      border-bottom-color: var(--color-border);
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 0.75rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      text-decoration: none;
+      color: var(--color-text);
+      margin-right: auto;
+      padding: 0.5rem 0;
+    }
+
+    .nav-logo:visited {
+      color: var(--color-text);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--color-text);
+      padding: 0.5rem 0;
+      white-space: nowrap;
+    }
+
+    .nav-links a:visited {
+      color: var(--color-text);
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .dark-toggle {
+      min-width: 44px;
+      min-height: 44px;
+      background: none;
+      border: 1px solid var(--color-muted);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.25rem;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 1rem;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      min-width: 44px;
+      min-height: 44px;
+      background: none;
+      border: 1px solid var(--color-muted);
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 0.5rem;
+      margin-left: 0.5rem;
+    }
+
+    .hamburger-line {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background-color: var(--color-text);
+    }
+
+    .hero-section {
+      background-color: var(--color-bg);
+      text-align: center;
+      padding: 6rem 2rem;
+    }
+
+    .hero-section p {
+      margin-top: 1rem;
+      color: var(--color-muted);
+      font-size: 1.125rem;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      margin-top: 2rem;
+      font-size: 1.125rem;
+    }
+
+    .section {
+      padding: 4rem 2rem;
+    }
+
+    .section h2 {
+      text-align: center;
+      max-width: 48rem;
+      margin: 0 auto 2rem;
+    }
+
+    .products-section {
+      background-color: var(--color-surface);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 72rem;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background-color: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
+      background-color: var(--color-surface-alt);
+      display: block;
+    }
+
+    .product-info {
+      padding: 1.25rem;
+    }
+
+    .product-info h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .product-info p {
+      color: var(--color-muted);
+      margin-top: 0.25rem;
+    }
+
+    .product-info .product-price {
+      color: var(--color-text);
+      font-weight: bold;
+      margin-top: 0.75rem;
+    }
+
+    .features-section {
+      background-color: var(--color-bg);
+    }
+
+    .features-list {
+      max-width: 36rem;
+      margin: 0 auto;
+    }
+
+    .feature-item {
+      margin-bottom: 2rem;
+    }
+
+    .feature-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .feature-item dt {
+      font-weight: bold;
+      font-size: 1.125rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .feature-item dd {
+      color: var(--color-muted);
+    }
+
+    .heritage-section {
+      background-color: var(--color-surface);
+    }
+
+    .heritage-section p {
+      max-width: 48rem;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    .about-section {
+      background-color: var(--color-bg);
+    }
+
+    .about-section > p {
+      max-width: 48rem;
+      margin: 0 auto;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+      max-width: 48rem;
+      margin: 2.5rem auto 0;
+    }
+
+    .team-card {
+      text-align: center;
+    }
+
+    .team-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background-color: var(--color-surface-alt);
+      margin: 0 auto 0.75rem;
+      object-fit: cover;
+    }
+
+    .team-card h3 {
+      margin-bottom: 0.25rem;
+    }
+
+    .team-card p {
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-section {
+      background-color: var(--color-surface);
+    }
+
+    .contact-info {
+      max-width: 48rem;
+      margin: 0 auto 1.5rem;
+      font-style: normal;
+    }
+
+    .contact-info p {
+      margin-bottom: 0.5rem;
+    }
+
+    .social-links {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-section > p {
+      max-width: 48rem;
+      margin: 0 auto;
+    }
+
+    .site-footer {
+      background-color: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--color-text);
+      text-decoration: none;
+    }
+
+    .footer-links a:visited {
+      color: var(--color-text);
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .back-to-top {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-copy {
+      color: var(--color-muted);
+    }
+
+    @media (max-width: 767px) {
+      html {
+        scroll-padding-top: 3.5rem;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .nav-bar {
+        padding: 0.5rem 1rem;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        flex-basis: 100%;
+        flex-direction: column;
+        gap: 0;
+        order: 10;
+        border-top: 1px solid var(--color-border);
+        padding-top: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        display: block;
+        padding: 0.75rem 0;
+      }
+
+      .hero-section {
+        padding: 4rem 1.5rem;
+      }
+
+      .section {
+        padding: 3rem 1.5rem;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr;
+        max-width: 16rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+    }
+
+    @media (max-width: 379px) {
+      .nav-bar {
+        padding: 0.5rem 0.75rem;
+      }
+
+      .hero-section {
+        padding: 3rem 1rem;
+      }
+
+      .section {
+        padding: 2.5rem 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-
-  <!-- Skip to main content link (WCAG 2.4.1) -->
   <a href="#main" class="skip-link">Skip to main content</a>
 
-  <!-- Sticky Navigation -->
   <header class="site-header">
-    <nav class="nav-bar container" aria-label="Main navigation">
-      <a href="#" class="nav-logo"><strong>ThinkPad</strong></a>
-
-      <button
-        class="nav-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="nav-menu"
-        aria-label="Toggle menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-
-      <ul id="nav-menu" class="nav-links" role="list">
+    <nav aria-label="Main navigation" class="nav-bar">
+      <a href="https://www.lenovo.com/thinkpad" class="nav-logo" target="_blank" rel="noopener noreferrer"><strong>ThinkPad</strong></a>
+      <ul id="nav-menu" class="nav-links">
         <li><a href="#">Home</a></li>
         <li><a href="#products">Products</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#heritage">Heritage</a></li>
+        <li><a href="#about">About Us</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
+      <button type="button" class="dark-toggle" aria-label="Switch to dark mode">☽</button>
+      <button type="button" class="hamburger" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
     </nav>
   </header>
 
   <main id="main">
-
-    <!-- Hero Section -->
     <section class="hero-section">
-      <div class="container">
-        <h1>Think Different. Think ThinkPad.</h1>
-        <p class="hero-subtitle">
-          Built for business. Engineered for reliability. Trusted since 1992.
-        </p>
-        <a href="#products" class="hero-cta">Explore the Lineup →</a>
-      </div>
+      <h1>Think Different. Think ThinkPad.</h1>
+      <p>Built for business. Engineered for reliability. Trusted since 1992.</p>
+      <a href="#products" class="hero-cta">Explore the Lineup →</a>
     </section>
 
-    <!-- Products Section -->
-    <section id="products" class="products-section">
-      <div class="container">
-        <h2>Current Lineup</h2>
-        <div class="product-grid">
+    <section id="products" class="section products-section">
+      <h2>Sample Lineup</h2>
+      <div class="product-grid">
+        <article class="product-card">
+          <img
+            src="https://p4-ofp.static.pub//fes/cms/2025/12/23/hvjatgukn40cpwh4ly32nc6jxk0lbi782053.png?width=400&height=400"
+            alt="ThinkPad X1 Carbon Gen 13 Aura Edition laptop, open, front-facing view"
+            width="400" height="400" loading="lazy">
+          <div class="product-info">
+            <h3><a href="https://www.lenovo.com/ph/en/p/laptops/thinkpad/thinkpadx1/thinkpad-x1-carbon-gen-13-aura-edition-14-inch-intel/len101t0108" target="_blank" rel="noopener noreferrer">ThinkPad X1 Carbon Gen 13 Aura Edition</a></h3>
+            <p>Ultra-portable 14″ flagship. Under 2.5 lbs.</p>
+            <p class="product-price">Starting at ₱111,666.63</p>
+          </div>
+        </article>
 
-          <article class="product-card">
-            <div class="product-image" role="img"
-              aria-label="ThinkPad X1 Carbon Gen 13 Aura Edition laptop">
-              [ThinkPad X1 Carbon Gen 13]
-            </div>
-            <h3>ThinkPad X1 Carbon Gen 13 Aura Edition</h3>
-            <p>Ultra-portable 14″ flagship. Under 1kg.</p>
-            <p class="product-price">Starting at $1,679</p>
-          </article>
-
-          <article class="product-card">
-            <div class="product-image" role="img"
-              aria-label="ThinkPad X1 2-in-1 Gen 10 Aura Edition laptop">
-              [ThinkPad X1 2-in-1 Gen 10]
-            </div>
-            <h3>ThinkPad X1 2-in-1 Gen 10 Aura Edition</h3>
+        <article class="product-card">
+          <img
+            src="https://p4-ofp.static.pub//fes/cms/2025/09/22/62vak5rjtms0z01gm7bvs75smu0eow686491.png?width=400&height=400"
+            alt="ThinkPad X1 2-in-1 Gen 10 Aura Edition convertible laptop, tent mode"
+            width="400" height="400" loading="lazy">
+          <div class="product-info">
+            <h3><a href="https://www.lenovo.com/ph/en/p/laptops/thinkpad/thinkpadx1/lenovo-thinkpad-x1-2-in-1-gen-10-aura-edition-14-inch-intel/len101t0112" target="_blank" rel="noopener noreferrer">ThinkPad X1 2-in-1 Gen 10 Aura Edition</a></h3>
             <p>Convertible with 360° hinge and stylus support.</p>
-            <p class="product-price">Starting at $2,125</p>
-          </article>
+            <p class="product-price">Starting at ₱131,057.79</p>
+          </div>
+        </article>
 
-          <article class="product-card">
-            <div class="product-image" role="img"
-              aria-label="ThinkPad T14 Gen 6 laptop">
-              [ThinkPad T14 Gen 6]
-            </div>
-            <h3>ThinkPad T14 Gen 6</h3>
-            <p>Enterprise workhorse with Intel, AMD, or Qualcomm Snapdragon options.</p>
-            <p class="product-price">Starting at $1,224</p>
-          </article>
+        <article class="product-card">
+          <img
+            src="https://p1-ofp.static.pub//fes/cms/2025/04/08/mi5qm8tr8bx7flftut4lop021yuv1z747949.png?width=400&height=400"
+            alt="ThinkPad T14 Gen 6 laptop, open, angled view"
+            width="400" height="400" loading="lazy">
+          <div class="product-info">
+            <h3><a href="https://www.lenovo.com/ph/en/p/laptops/thinkpad/thinkpadt/thinkpad-t14-gen-6-14-inch-intel/len101t0126" target="_blank" rel="noopener noreferrer">ThinkPad T14 Gen 6</a></h3>
+            <p>Enterprise workhorse with Intel or AMD options.</p>
+            <p class="product-price">Starting at ₱80,431.71</p>
+          </div>
+        </article>
 
-          <article class="product-card">
-            <div class="product-image" role="img"
-              aria-label="ThinkPad T16 Gen 4 laptop">
-              [ThinkPad T16 Gen 4]
-            </div>
-            <h3>ThinkPad T16 Gen 4</h3>
+        <article class="product-card">
+          <img
+            src="https://p4-ofp.static.pub//fes/cms/2025/04/04/0ave160v06at4rvgdk9s7jl8pt4g9j262517.png?width=400&height=400"
+            alt="ThinkPad T16 Gen 4 laptop, open, front-facing view"
+            width="400" height="400" loading="lazy">
+          <div class="product-info">
+            <h3><a href="https://www.lenovo.com/ph/en/p/laptops/thinkpad/thinkpadt/thinkpad-t16-gen-4-16-inch-intel/len101t0123" target="_blank" rel="noopener noreferrer">ThinkPad T16 Gen 4</a></h3>
             <p>16-inch display for professionals who need screen real estate.</p>
-            <p class="product-price">Starting at $1,254</p>
-          </article>
+            <p class="product-price">Starting at ₱80,385.30</p>
+          </div>
+        </article>
 
-          <article class="product-card">
-            <div class="product-image" role="img"
-              aria-label="ThinkPad E14 Gen 7 laptop">
-              [ThinkPad E14 Gen 7]
-            </div>
-            <h3>ThinkPad E14 Gen 7</h3>
+        <article class="product-card">
+          <img
+            src="https://p3-ofp.static.pub//fes/cms/2025/03/17/rhrujhvv506ok0urr6gpzsmnikpxyj169232.png?width=400&height=400"
+            alt="ThinkPad E14 Gen 7 laptop, open, angled view"
+            width="400" height="400" loading="lazy">
+          <div class="product-info">
+            <h3><a href="https://www.lenovo.com/ph/en/p/laptops/thinkpad/thinkpade/thinkpad-e14-gen-7-14-inch-intel/len101t0119" target="_blank" rel="noopener noreferrer">ThinkPad E14 Gen 7</a></h3>
             <p>Reliable, cost-effective option for SMBs.</p>
-            <p class="product-price">Starting at $895</p>
-          </article>
+            <p class="product-price">Starting at ₱63,326.27</p>
+          </div>
+        </article>
 
-          <article class="product-card">
-            <div class="product-image" role="img"
-              aria-label="ThinkPad P14s AMD Gen 6 mobile workstation">
-              [ThinkPad P14s AMD Gen 6]
-            </div>
-            <h3>ThinkPad P14s AMD Gen 6</h3>
+        <article class="product-card">
+          <img
+            src="https://p1-ofp.static.pub//fes/cms/2025/09/24/ugo7lua14488z1dn79luosiok8ai9r440237.png?width=400&height=400"
+            alt="ThinkPad P14s AMD Gen 6 mobile workstation, open, front-facing view"
+            width="400" height="400" loading="lazy">
+          <div class="product-info">
+            <h3><a href="https://www.lenovo.com/ph/en/p/laptops/thinkpad/thinkpadp/thinkpad-p14s-gen-6-14-inch-amd-mobile-workstation/len101t0118" target="_blank" rel="noopener noreferrer">ThinkPad P14s AMD Gen 6</a></h3>
             <p>Thinnest and lightest mobile workstation in the portfolio.</p>
-            <p class="product-price">Starting at $1,295</p>
-          </article>
+            <p class="product-price">Starting at ₱79,389.92</p>
+          </div>
+        </article>
+      </div>
+    </section>
 
+    <section id="features" class="section features-section">
+      <h2>Why ThinkPad?</h2>
+      <dl class="features-list">
+        <div class="feature-item">
+          <dt>Legendary Keyboard</dt>
+          <dd>Best-in-class typing experience with the iconic TrackPoint.</dd>
         </div>
+        <div class="feature-item">
+          <dt>MIL-STD-810H Tested</dt>
+          <dd>Built to survive drops, vibrations, and extreme temperatures.</dd>
+        </div>
+        <div class="feature-item">
+          <dt>Enterprise Security</dt>
+          <dd>ThinkShield security suite with dTPM 2.0 and biometric login.</dd>
+        </div>
+        <div class="feature-item">
+          <dt>All-Day Battery</dt>
+          <dd>Up to 15+ hours on select models.</dd>
+        </div>
+        <div class="feature-item">
+          <dt>AI-Ready</dt>
+          <dd>NPUs delivering up to 50 TOPS for on-device AI workloads.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section id="heritage" class="section heritage-section">
+      <h2>Three Decades of Innovation</h2>
+      <p>ThinkPad is a line of business-oriented laptops originally designed by
+        <a href="https://en.wikipedia.org/wiki/IBM" target="_blank" rel="noopener noreferrer">IBM</a>
+        and sold to Lenovo in 2005. The industrial design was created in 1990 by
+        <a href="https://en.wikipedia.org/wiki/Richard_Sapper" target="_blank" rel="noopener noreferrer">Richard Sapper</a>,
+        based on the concept of a traditional Japanese bento lunchbox. Over the decades, ThinkPad laptops have traveled to outer space aboard the International Space Station and have earned a lasting reputation as one of the most reliable and iconic laptop lines in computing history.</p>
+    </section>
+
+    <section id="about" class="section about-section">
+      <h2>About Us</h2>
+      <p>This website was designed and built by BSIT-1A Group 3 as a tribute to one of the most iconic laptop lines in computing history. It is not affiliated with or endorsed by Lenovo.</p>
+      <div class="team-grid">
+        <div class="team-card">
+          <img src="https://placehold.co/160x160/E0E0E0/666?text=RV" alt="Placeholder avatar" class="team-avatar" width="160" height="160" loading="lazy">
+          <h3>Renz Viernes</h3>
+          <p>Leader</p>
+          <a href="https://github.com/Rentsu" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+        <div class="team-card">
+          <img src="https://placehold.co/160x160/E0E0E0/666?text=AE" alt="Placeholder avatar" class="team-avatar" width="160" height="160" loading="lazy">
+          <h3>Anjelo Evangelista</h3>
+          <p>Member</p>
+          <a href="https://github.com/ajgiou" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+        <div class="team-card">
+          <img src="https://placehold.co/160x160/E0E0E0/666?text=SD" alt="Placeholder avatar" class="team-avatar" width="160" height="160" loading="lazy">
+          <h3>Sev Florenz Doctor</h3>
+          <p>Member</p>
+          <a href="https://sbji-0.github.io/SBJI-0.github.io-/RW/Resume.html" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+         <div class="team-card">
+          <img src="https://placehold.co/160x160/E0E0E0/666?text=EB" alt="Placeholder avatar" class="team-avatar" width="160" height="160" loading="lazy">
+          <h3>Ervin Baniqued</h3>
+          <p>Member</p>
+          <a href="https://www.facebook.com/ervin.baniqued.7" target="_blank" rel="noopener noreferrer">Facebook</a>
+        </div>
+        <div class="team-card">
+          <img src="https://placehold.co/160x160/E0E0E0/666?text=FO" alt="Placeholder avatar" class="team-avatar" width="160" height="160" loading="lazy">
+          <h3>Ferdinand Oropilla</h3>
+          <p>Member</p>
+          <a href="https://www.facebook.com/ferdinand.gabayan.2025" target="_blank" rel="noopener noreferrer">Facebook</a>
+        </div>
+<div class="team-card">
+          <img src="https://placehold.co/160x160/E0E0E0/666?text=TD" alt="Placeholder avatar" class="team-avatar" width="160" height="160" loading="lazy">
+          <h3>Terrence Dela Cruz</h3>
+          <p>Member</p>
+          <a href="https://www.facebook.com/rencedelulu" target="_blank" rel="noopener noreferrer">Facebook</a>
+        </div>
+<div class="team-card">
+          <img src="https://placehold.co/160x160/E0E0E0/666?text=KA" alt="Placeholder avatar" class="team-avatar" width="160" height="160" loading="lazy">
+          <h3>Kyle Ayson</h3>
+          <p>Member</p>
+          <a href="https://www.facebook.com/kyle.ayson.50" target="_blank" rel="noopener noreferrer">Facebook</a>
+        </div>
+<div class="team-card">
+          <img src="https://placehold.co/160x160/E0E0E0/666?text=BT" alt="Placeholder avatar" class="team-avatar" width="160" height="160" loading="lazy">
+          <h3>Brylle Torrentira</h3>
+          <p>Member</p>
+          <a href="https://www.facebook.com/bryllegian.torrentira.5" target="_blank" rel="noopener noreferrer">Facebook</a>
       </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features-section">
-      <div class="container">
-        <h2>Why ThinkPad?</h2>
-        <dl class="features-list">
-          <div class="feature-item">
-            <dt>Legendary Keyboard</dt>
-            <dd>Best-in-class typing experience with the iconic TrackPoint.</dd>
-          </div>
-          <div class="feature-item">
-            <dt>MIL-STD-810H Tested</dt>
-            <dd>Built to survive drops, vibrations, and extreme temperatures.</dd>
-          </div>
-          <div class="feature-item">
-            <dt>Enterprise Security</dt>
-            <dd>ThinkShield security suite with TPM 2.0 and biometric login.</dd>
-          </div>
-          <div class="feature-item">
-            <dt>All-Day Battery</dt>
-            <dd>Up to 15+ hours on select models.</dd>
-          </div>
-          <div class="feature-item">
-            <dt>AI-Ready</dt>
-            <dd>NPUs delivering up to 50 TOPS for on-device AI workloads.</dd>
-          </div>
-        </dl>
-      </div>
+    <section id="contact" class="section contact-section">
+      <h2>Contact Us</h2>
+      <address class="contact-info">
+        <p><strong>Email:</strong> <a href="mailto:contact@example.com">contact@example.com</a></p>
+        <p><strong>Phone:</strong> <a href="tel:+15550000000">+1 (555) 000-0000</a></p>
+        <p><strong>Address:</strong> 1009 Think Place, Morrisville, NC 27560, USA</p>
+      </address>
+      <p>For official Lenovo support, visit <a href="https://support.lenovo.com/ph/en/" target="_blank" rel="noopener noreferrer">support.lenovo.com/ph/en</a>.</p>
     </section>
-
-    <!-- Heritage Section -->
-    <section id="heritage" class="heritage-section">
-      <div class="container">
-        <h2>Three Decades of Innovation</h2>
-        <p>
-          The ThinkPad is a line of business-oriented laptops that were originally designed, manufactured, and sold by IBM starting in 1992. In 2005, Lenovo acquired IBM's personal computer division, thereby acquiring the renowned ThinkPad brand and perpetuating its legacy of engineering excellence.
-        </p>
-        <p>
-          The distinctive industrial design of the ThinkPad was developed in 1992 by Richard Sapper, who drew inspiration from the clean, compartmentalized form of a traditional Japanese bento lunchbox. That design philosophy — functional, unadorned, and purposeful — continues to define the line to this day.
-        </p>
-        <p>
-          ThinkPads have a proven track record of reliability, having been used for years as the standard laptop on the International Space Station. From the office to the field, the ThinkPad is a reliable tool for those who demand dependability above all else.
-        </p>
-      </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-      <div class="container">
-        <h2>Get in Touch</h2>
-
-        <form id="contact-form" novalidate>
-          <div class="form-field">
-            <label for="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              autocomplete="name"
-              aria-describedby="name-error"
-              required>
-            <span id="name-error" class="field-error" aria-live="assertive"></span>
-          </div>
-
-          <div class="form-field">
-            <label for="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              autocomplete="email"
-              aria-describedby="email-error"
-              required>
-            <span id="email-error" class="field-error" aria-live="assertive"></span>
-          </div>
-
-          <div class="form-field">
-            <label for="message">Message</label>
-            <textarea
-              id="message"
-              name="message"
-              rows="5"
-              aria-describedby="message-error"
-              required></textarea>
-            <span id="message-error" class="field-error" aria-live="assertive"></span>
-          </div>
-
-          <button type="submit">Send Message</button>
-        </form>
-
-        <!-- Shown after successful submission -->
-        <p id="form-success" class="form-success" role="status" hidden tabindex="-1">
-          Thank you! Your message has been sent.
-        </p>
-      </div>
-    </section>
-
   </main>
 
-  <!-- Footer -->
   <footer class="site-footer">
-    <div class="container">
-      <nav aria-label="Footer navigation">
-        <ul class="footer-links" role="list">
-          <li><a href="#">Home</a></li>
-          <li><a href="#products">Products</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#heritage">Heritage</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
-      <a href="#" class="back-to-top">Back to top ↑</a>
-      <p class="footer-legal">© 2026 Lenovo. ThinkPad is a trademark of Lenovo.</p>
-    </div>
+    <nav aria-label="Footer navigation">
+      <ul class="footer-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#heritage">Heritage</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="#" class="back-to-top" aria-label="Back to top">Back to top ↑</a>
+    <p class="footer-copy">© 2026 Lenovo. ThinkPad is a trademark of Lenovo. This is for Educational Purposes.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    (function() {
+      var html = document.documentElement;
+      var toggle = document.querySelector('.dark-toggle');
+      var STORAGE_KEY = 'thinkpad-theme';
+
+      function setDarkMode(isDark) {
+        html.classList.toggle('dark-mode', isDark);
+        toggle.textContent = isDark ? '☀' : '☽';
+        toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      }
+
+      function getPreference() {
+        var stored = localStorage.getItem(STORAGE_KEY);
+        if (stored !== null) return stored === 'dark';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      setDarkMode(getPreference());
+
+      toggle.addEventListener('click', function() {
+        var isDark = !html.classList.contains('dark-mode');
+        setDarkMode(isDark);
+        localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
+      });
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+        if (localStorage.getItem(STORAGE_KEY) === null) {
+          setDarkMode(e.matches);
+        }
+      });
+
+      var hamburger = document.querySelector('.hamburger');
+      var navMenu = document.getElementById('nav-menu');
+
+      function closeMenu() {
+        hamburger.setAttribute('aria-expanded', 'false');
+        navMenu.classList.remove('open');
+      }
+
+      function openMenu() {
+        hamburger.setAttribute('aria-expanded', 'true');
+        navMenu.classList.add('open');
+        var firstLink = navMenu.querySelector('a');
+        if (firstLink) firstLink.focus();
+      }
+
+      hamburger.addEventListener('click', function() {
+        var isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && navMenu.classList.contains('open')) {
+          closeMenu();
+          hamburger.focus();
+        }
+      });
+
+      /* Focus trap: cycle through nav bar focusable items when menu is open */
+      document.querySelector('.nav-bar').addEventListener('keydown', function(e) {
+        if (e.key !== 'Tab' || !navMenu.classList.contains('open')) return;
+
+        var nav = document.querySelector('.nav-bar');
+        var focusable = nav.querySelectorAll('a, button');
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      });
+
+      navMenu.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (navMenu.classList.contains('open')) {
+            closeMenu();
+          }
+        });
+      });
+
+      var header = document.querySelector('.site-header');
+      var hero = document.querySelector('.hero-section');
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          header.classList.toggle('scrolled', !entry.isIntersecting);
+        });
+      }, { threshold: 0 });
+
+      observer.observe(hero);
+    })();
+  </script>
 </body>
 </html>
